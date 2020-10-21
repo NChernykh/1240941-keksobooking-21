@@ -68,7 +68,7 @@ const Pin = {
   HEIGHT: 70
 };
 
-const MAIN_PIN = {
+const mainPin = {
   WIDTH: 65,
   HEIGHT: 87
 };
@@ -78,6 +78,25 @@ const priceMap = {
   flat: 1000,
   house: 5000,
   palace: 10000
+};
+
+const Capacity = {
+  1: {
+    key: [1],
+    message: '1 комната для 1-го гостя'
+  },
+  2: {
+    key: [1, 2],
+    message: '2 комнаты для 1-го или 2-х гостей'
+  },
+  3: {
+    key: [1, 2, 3],
+    message: `3 комнаты для 1-го, 2-х или 3-х гостей`
+  },
+  100: {
+    key: [0],
+    message: `100 комнат не для гостей`
+  }
 };
 
 /**
@@ -183,7 +202,7 @@ const renderMarks = (newOffers) => {
   return fragment;
 };
 
-const mainPin = map.querySelector(`.map__pin--main`);
+const mapPin = map.querySelector(`.map__pin--main`);
 const mapFormFilters = map.querySelectorAll(`select, fieldset`);
 
 
@@ -206,8 +225,8 @@ const getCoords = (pin) => {
   let box = pin.getBoundingClientRect();
 
   return {
-    left: Math.round(box.left + pageXOffset + MAIN_PIN.WIDTH / 2),
-    top: Math.round(box.top + pageYOffset + MAIN_PIN.HEIGHT)
+    left: Math.round(box.left + pageXOffset + mainPin.WIDTH / 2),
+    top: Math.round(box.top + pageYOffset + mainPin.HEIGHT)
   };
 };
 
@@ -248,46 +267,44 @@ const activatePage = function () {
 /**
  * Добавляет обработчик событий mousedown (левая кнопка)
  */
-mainPin.addEventListener(`mousedown`, function (evt) {
+mapPin.addEventListener(`mousedown`, function (evt) {
   if (evt.button === 0) {
     evt.preventDefault();
     activatePage();
   }
-  addressInput.value = `${getCoords(mainPin).left}, ${getCoords(mainPin).top}`;
+  addressInput.value = `${getCoords(mapPin).left}, ${getCoords(mapPin).top}`;
 });
 
-mainPin.addEventListener(`keydown`, function (evt) {
+mapPin.addEventListener(`keydown`, function (evt) {
   if (evt.key === `Enter`) {
     activatePage();
   }
   addressInput.value = `${getCoords(mainPin).left}, ${getCoords(mainPin).top}`;
 });
 
-const checkCapacity = () => {
-  if (roomNumberSelect.value === `1` && capacitySelect.value !== `1`) {
-    capacitySelect.setCustomValidity(`1 комната для 1-го гостя`);
-  } else if (roomNumberSelect.value === `2` && (capacitySelect.value >= 3 || capacitySelect.value === `0`)) {
-    capacitySelect.setCustomValidity(`2 комнаты для 1-го или 2-х гостей`);
-  } else if (roomNumberSelect.value === `3` && capacitySelect.value === `0`) {
-    capacitySelect.setCustomValidity(`3 комнаты для 1-го, 2-х или 3-х гостей`);
-  } else if (roomNumberSelect.value === `100` && capacitySelect.value !== `0`) {
-    capacitySelect.setCustomValidity(`100 комнат не для гостей`);
-  } else {
+const capacityChangeHandler = () => {
+  const rooms = roomNumberSelect.value;
+  const guests = capacitySelect.value;
+  const selectValue = Capacity[rooms];
+  if (+guests > selectValue.key.length || (+guests === Guests.MIN && +rooms === Rooms.MAX)) {
+    capacitySelect.setCustomValidity(selectValue.message);
+  } else if (+rooms === Rooms.MAX && +guests === Rooms.MIN || +rooms === Rooms.MIN && +guests === Guests.MIN) {
+      capacitySelect.setCustomValidity(selectValue.message);
+    } else {
     capacitySelect.setCustomValidity(``);
   }
-
-  capacitySelect.reportValidity(); // Не погу понять, почему не работает валидация...
+  capacitySelect.reportValidity();
 };
 
-const setMinPrice = () => {
-  const price = priceInput.value;
+const MinPriceChangeHandler = () => {
+  const price = +priceInput.value;
   const minPrice = priceMap[apartmentTypeSelect.options[apartmentTypeSelect.selectedIndex].value];
   priceInput.placeholder = minPrice;
   priceInput.min = minPrice;
 
   if (price < minPrice) {
     priceInput.setCustomValidity(`Минимальная цена для данного размещения ${minPrice}`);
-  } else if (price > priceInput.max) {
+  } else if (price > +priceInput.max) {
     priceInput.setCustomValidity(`Максимально возможая цена ${priceInput.max}`);
   } else {
     priceInput.setCustomValidity(``);
@@ -295,13 +312,15 @@ const setMinPrice = () => {
   priceInput.reportValidity(); // И цена тоже
 };
 
-const setCheckInOut = (evt) => {
+const CheckInOutChangeHandler = (evt) => {
   checkinSelect.value = evt.target.value;
   checkoutSelect.value = evt.target.value;
+  const check = checkinSelect;
 };
 
-roomNumberSelect.addEventListener(`change`, checkCapacity);
-apartmentTypeSelect.addEventListener(`change`, setMinPrice);
-priceInput.addEventListener(`input`, setMinPrice);
-checkinSelect.addEventListener(`change`, setCheckInOut);
-checkoutSelect.addEventListener(`change`, setCheckInOut);
+roomNumberSelect.addEventListener(`change`, capacityChangeHandler);
+capacitySelect.addEventListener(`change`, capacityChangeHandler);
+apartmentTypeSelect.addEventListener(`change`, MinPriceChangeHandler);
+priceInput.addEventListener(`change`, MinPriceChangeHandler);
+checkinSelect.addEventListener(`change`, CheckInOutChangeHandler);
+checkoutSelect.addEventListener(`change`, CheckInOutChangeHandler);
