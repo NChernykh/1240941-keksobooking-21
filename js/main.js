@@ -12,12 +12,12 @@ const TITLE = [
   `MArriott`
 ];
 
-const TYPE = [
-  `palace`,
-  `flat`,
-  `house`,
-  `bungalow`
-];
+const Type = {
+  palace: `Дворец`,
+  flat: `Квартира`,
+  house: `Дом`,
+  bungalow: `Бунгало`
+};
 
 const CHECKIN_CHECKOUT = [
   `12:00`,
@@ -83,11 +83,11 @@ const priceMap = {
 const Capacity = {
   1: {
     key: [1],
-    message: '1 комната для 1-го гостя'
+    message: `1 комната для 1-го гостя`
   },
   2: {
     key: [1, 2],
-    message: '2 комнаты для 1-го или 2-х гостей'
+    message: `2 комнаты для 1-го или 2-х гостей`
   },
   3: {
     key: [1, 2, 3],
@@ -135,7 +135,6 @@ const getRandomArraySize = (array) => {
 const offersList = (offersNumber) => {
   const offersArray = [];
 
-
   for (let i = 1; i <= offersNumber; i++) {
     const locationX = getRandomInteger(rangeX.MIN, rangeX.MAX);
     const locationY = getRandomInteger(rangeY.MIN, rangeY.MAX);
@@ -147,7 +146,7 @@ const offersList = (offersNumber) => {
         title: getRandomElement(TITLE),
         address: `${locationX}, ${locationY}`,
         price: getRandomInteger(Price.MIN, Price.MAX),
-        type: getRandomElement(TYPE),
+        type: getRandomElement(Object.keys(Type)),
         rooms: getRandomInteger(Rooms.MIN, Rooms.MAX),
         guests: getRandomInteger(Guests.MIN, Guests.MAX),
         checkin: getRandomElement(CHECKIN_CHECKOUT),
@@ -167,45 +166,124 @@ const offersList = (offersNumber) => {
 };
 
 const map = document.querySelector(`.map`);
-const marksList = map.querySelector(`.map__pins`);
-const markElementTemplate = document.querySelector(`#pin`)
+const pinTemplate = document.querySelector(`#pin`)
   .content.querySelector(`.map__pin`);
+const mapFiltersContainer = map.querySelector(`.map__filters-container`);
 
 /**
  * Создвет DOM-элемент метки (клонирует шаблон и заполняет его данными метки)
- * @param {Object} newOffer данные объявления
+ * @param {Object} offerData данные объявления
  * @return {*} DOM-элемент
  */
-const renderMark = (newOffer) => {
-  const markElement = markElementTemplate.cloneNode(true);
-  const avatarImg = markElement.querySelector(`img`);
+const renderPin = (offerData) => {
+  const pinElement = pinTemplate.cloneNode(true);
+  const avatarImg = pinElement.querySelector(`img`);
 
-  markElement.style.left = `${newOffer.location.x - Pin.WIDTH / 2}px`;
-  markElement.style.top = `${newOffer.location.y - Pin.HEIGHT}px`;
-  avatarImg.src = newOffer.author.avatar;
-  avatarImg.alt = newOffer.offer.title;
-  return markElement;
+  pinElement.style.left = `${offerData.location.x - Pin.WIDTH / 2}px`;
+  pinElement.style.top = `${offerData.location.y - Pin.HEIGHT}px`;
+  avatarImg.src = offerData.author.avatar;
+  avatarImg.alt = offerData.offer.title;
+  return pinElement;
 };
 
 /**
  * Создает фрагмент документа (коллекция из DOM-элементов меток объяв)
- * @param {Array} newOffers массив объявлений
+ * @param {Array} offersArr массив объявлений
  * @return {*} фрагмент документа
  */
-const renderMarks = (newOffers) => {
+const renderPins = (offersArr) => {
   const fragment = document.createDocumentFragment();
 
-  newOffers.forEach(function (newOffer) {
-    fragment.appendChild(renderMark(newOffer));
+  offersArr.forEach(function (offerData) {
+    fragment.appendChild(renderPin(offerData));
   });
 
   return fragment;
 };
 
-const mapPin = map.querySelector(`.map__pin--main`);
+/**
+ * Создает карточку объявления
+ * @param {object} item Объект объявления
+ */
+const renderCard = (item) => {
+  const cardTemplate = document.querySelector(`#card`).content.querySelector(`.map__card`);
+  const card = cardTemplate.cloneNode(true);
+
+  const getFeature = (offerData) => {
+    const fragment = document.createDocumentFragment();
+    const popupFeatures = card.querySelector(`.popup__features`);
+
+    offerData.offer.features.forEach(function (featuresElem) {
+      const element = document.createElement(`li`);
+      element.className = `popup__feature popup__feature--${featuresElem}`;
+      fragment.appendChild(element);
+    });
+
+    popupFeatures.appendChild(fragment);
+    return popupFeatures;
+  };
+
+  const getPhotos = function (offerData) {
+    const fragment = document.createDocumentFragment();
+    const popupPhotos = card.querySelector(`.popup__photos`);
+    const photo = popupPhotos.querySelector(`.popup__photo`);
+    popupPhotos.removeChild(photo);
+
+    offerData.offer.photos.forEach(function (photosElem) {
+      const element = document.createElement(`img`);
+      element.src = photosElem;
+      element.width = 45;
+      element.height = 40;
+      element.alt = item.offer.title;
+      fragment.appendChild(element);
+    });
+
+    popupPhotos.appendChild(fragment);
+    return popupPhotos;
+  };
+
+  card.querySelector(`.popup__title`).textContent = item.offer.title;
+  card.querySelector(`.popup__text--address`).textContent = item.offer.address;
+  card.querySelector(`.popup__text--price`).textContent = `${item.offer.price} ₽/ночь`;
+  card.querySelector(`.popup__type`).textContent = Type[item.offer.type];
+  card.querySelector(`.popup__text--capacity`).textContent = `${item.offer.rooms} комнаты для ${item.offer.guests} гостей`;
+  card.querySelector(`.popup__text--time`).textContent = `Заезд после ${item.offer.checkin}, выезд до ${item.offer.checkout}`;
+  getFeature(item);
+  card.querySelector(`.popup__description`).textContent = item.offer.description;
+  getPhotos(item);
+  card.querySelector(`.popup__avatar`).src = item.author.avatar;
+
+  map.insertBefore(card, mapFiltersContainer);
+};
+
+const onPopupKeyPress = (evt) => {
+  if (evt.key === `Escape`) {
+    evt.preventDefault();
+    closePopup();
+  }
+};
+
+const closePopup = function () {
+  let mapCard = map.querySelector(`.map__card`);
+  mapCard.remove();
+  document.removeEventListener(`keydown`, onPopupKeyPress);
+};
+
+const openPopup = (pinNumber) => {
+  let mapCard = map.querySelector(`.map__card`);
+
+  if (mapCard) {
+    mapCard.remove();
+  }
+  renderCard(pinNumber);
+  const cardClose = map.querySelector(`.popup__close`);
+  document.addEventListener(`keydown`, onPopupKeyPress);
+  cardClose.addEventListener(`click`, closePopup);
+};
+
+const mapPinMain = map.querySelector(`.map__pin--main`);
+const pinsContainer = map.querySelector(`.map__pins`);
 const mapFormFilters = map.querySelectorAll(`select, fieldset`);
-
-
 const adForm = document.querySelector(`.ad-form`);
 const fieldsets = adForm.querySelectorAll(`fieldset`);
 const addressInput = adForm.querySelector(`#address`);
@@ -235,7 +313,7 @@ const getCoords = (pin) => {
  * @param {object} fields Объект с интерактивными элементами
  */
 const fieldsOff = (fields) => {
-  fields.forEach(function (field) {
+  fields.forEach((field) => {
     field.setAttribute(`disabled`, `true`);
   });
 };
@@ -261,40 +339,50 @@ const activatePage = function () {
   adForm.classList.remove(`ad-form--disabled`);
   fieldsOn(mapFormFilters);
   fieldsOn(fieldsets);
-  marksList.appendChild(renderMarks(offersList(NUMBER_OF_OFFERS)));
+
+  const offerArr = offersList(NUMBER_OF_OFFERS);
+  pinsContainer.appendChild(renderPins(offerArr));
+
+  const pins = pinsContainer.querySelectorAll(`.map__pin:not(.map__pin--main)`);
+  pins.forEach((pin, index) => {
+    pin.hidden = false;
+    pin.addEventListener(`click`, () => {
+      openPopup(offerArr[index]);
+    });
+  });
 };
 
 /**
  * Добавляет обработчик событий mousedown (левая кнопка)
  */
-mapPin.addEventListener(`mousedown`, function (evt) {
+mapPinMain.addEventListener(`mousedown`, function (evt) {
   if (evt.button === 0) {
     evt.preventDefault();
     activatePage();
   }
-  addressInput.value = `${getCoords(mapPin).left}, ${getCoords(mapPin).top}`;
+  addressInput.value = `${getCoords(mapPinMain).left}, ${getCoords(mapPinMain).top}`;
 });
 
-mapPin.addEventListener(`keydown`, function (evt) {
+mapPinMain.addEventListener(`keydown`, function (evt) {
   if (evt.key === `Enter`) {
     activatePage();
   }
-  addressInput.value = `${getCoords(mainPin).left}, ${getCoords(mainPin).top}`;
+  addressInput.value = `${getCoords(mapPinMain).left}, ${getCoords(mapPinMain).top}`;
 });
 
-const capacityChangeHandler = () => {
+function capacityChangeHandler() {
   const rooms = roomNumberSelect.value;
   const guests = capacitySelect.value;
   const selectValue = Capacity[rooms];
   if (+guests > selectValue.key.length || (+guests === Guests.MIN && +rooms === Rooms.MAX)) {
     capacitySelect.setCustomValidity(selectValue.message);
   } else if (+rooms === Rooms.MAX && +guests === Rooms.MIN || +rooms === Rooms.MIN && +guests === Guests.MIN) {
-      capacitySelect.setCustomValidity(selectValue.message);
-    } else {
+    capacitySelect.setCustomValidity(selectValue.message);
+  } else {
     capacitySelect.setCustomValidity(``);
   }
   capacitySelect.reportValidity();
-};
+}
 
 const MinPriceChangeHandler = () => {
   const price = +priceInput.value;
@@ -315,7 +403,6 @@ const MinPriceChangeHandler = () => {
 const CheckInOutChangeHandler = (evt) => {
   checkinSelect.value = evt.target.value;
   checkoutSelect.value = evt.target.value;
-  const check = checkinSelect;
 };
 
 roomNumberSelect.addEventListener(`change`, capacityChangeHandler);
