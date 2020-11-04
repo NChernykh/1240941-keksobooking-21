@@ -88,7 +88,9 @@
   checkinSelect.addEventListener(`change`, checkInOutChangeHandler);
   checkoutSelect.addEventListener(`change`, checkInOutChangeHandler);
 
-  const disabledForm = () => {
+  const disableForm = () => {
+    map.classList.add(`map--faded`);
+    adForm.classList.add(`ad-form--disabled`);
     window.util.fieldsOff(mapFormFilters);
     window.util.fieldsOff(fieldsets);
   };
@@ -101,7 +103,7 @@
   };
 
   window.form = {
-    disabledForm,
-    activeForm
+    disable: disableForm,
+    active: activeForm
   };
 })();

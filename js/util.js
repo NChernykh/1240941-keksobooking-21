@@ -63,6 +63,12 @@
     });
   };
 
+  const removeItem = (item) => {
+    if (item) {
+      item.remove();
+    }
+  };
+
   window.util = {
     getRandomInteger,
     getRandomElement,
@@ -70,6 +76,7 @@
     isEscEvent,
     isEnterEvent,
     fieldsOff,
-    fieldsOn
+    fieldsOn,
+    removeItem
   };
 })();
