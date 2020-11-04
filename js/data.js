@@ -1,8 +1,6 @@
 'use strict';
 
 (() => {
-  const NUMBER_OF_OFFERS = 8;
-
   const TITLES = [
     `Unique`,
     `Telmo`,
@@ -66,14 +64,6 @@
     MAX: 3
   };
 
-  const Pin = {
-    WIDTH: 50,
-    HEIGHT: 70
-  };
-
-  const pinsContainer = document.querySelector(`.map__pins`);
-  const pinTemplate = document.querySelector(`#pin`).content.querySelector(`.map__pin`);
-
   /**
    * Генерирует моки объявлений
    * @param {number} offersNumber Количество объявлений
@@ -112,51 +102,7 @@
     return offersArray;
   };
 
-  const offersArray = getoffersData(NUMBER_OF_OFFERS);
-  /**
-   * Создвет DOM-элемент метки (клонирует шаблон и заполняет его данными метки)
-   * @param {Object} offerData данные объявления
-   * @return {*} DOM-элемент
-   */
-  const renderPin = (offerData) => {
-    const pinElement = pinTemplate.cloneNode(true);
-    const avatarImg = pinElement.querySelector(`img`);
-
-    pinElement.style.left = `${offerData.location.x - Pin.WIDTH / 2}px`;
-    pinElement.style.top = `${offerData.location.y - Pin.HEIGHT}px`;
-    avatarImg.src = offerData.author.avatar;
-    avatarImg.alt = offerData.offer.title;
-
-    return pinElement;
-  };
-
-  /**
-   * Создает фрагмент документа (коллекция из DOM-элементов меток объяв)
-   * @param {Array} offersArr массив объявлений
-   */
-  const renderPins = () => {
-    const fragment = document.createDocumentFragment();
-
-    offersArray.forEach((offerData) => {
-      fragment.appendChild(renderPin(offerData));
-    });
-
-    pinsContainer.appendChild(fragment);
-  };
-
-  const onPinClick = () => {
-    const pins = pinsContainer.querySelectorAll(`.map__pin:not(.map__pin--main)`);
-    pins.forEach((pin, index) => {
-      pin.hidden = false;
-      pin.addEventListener(`click`, () => {
-        window.card.openPopup(offersArray[index]);
-      });
-    });
-  };
-
-
   window.data = {
-    renderPins,
-    onPinClick
+    getoffers: getoffersData
   };
 })();
