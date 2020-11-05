@@ -77,6 +77,12 @@
     map.insertBefore(card, mapFiltersContainer);
   };
 
+  const removeCard = () => {
+    if (map.querySelector(`.map__card`)) {
+      map.querySelector(`.map__card`).remove();
+    }
+  };
+
   const onPopupKeyPress = (evt) => {
     window.util.isEscEvent(evt, closePopup);
   };
@@ -98,6 +104,7 @@
 
   window.card = {
     closePopup,
-    openPopup
+    openPopup,
+    remove: removeCard
   };
 })();

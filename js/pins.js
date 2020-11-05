@@ -43,6 +43,18 @@
   };
 
   /**
+   * Удаляет метки
+   */
+  const removePins = () => {
+    if (document.querySelector(`.map__pin:not(.map__pin--main)`)) {
+      const mapPins = document.querySelectorAll(`.map__pin:not(.map__pin--main)`);
+      for (let pin of mapPins) {
+        pin.remove();
+      }
+    }
+  };
+
+  /**
    * Создает фрагмент документа (коллекция из DOM-элементов меток объяв)
    */
   const renderPins = () => {
@@ -56,6 +68,7 @@
   };
 
   window.pins = {
-    render: renderPins
+    render: renderPins,
+    remove: removePins
   };
 })();

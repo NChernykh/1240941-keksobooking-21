@@ -43,6 +43,13 @@
     }
   };
 
+  const isMouseEvent = (evt, action) => {
+    if (evt.button === 0) {
+      evt.preventDefault();
+      action();
+    }
+  };
+
   /**
  * Добавляет аттрибут disabled всем интерактивным элементам
  * @param {object} fields Объект с интерактивными элементами
@@ -75,6 +82,7 @@
     getRandomArraySize,
     isEscEvent,
     isEnterEvent,
+    isMouseEvent,
     fieldsOff,
     fieldsOn,
     removeItem
