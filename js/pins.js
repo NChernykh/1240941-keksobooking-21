@@ -1,7 +1,7 @@
 'use strict';
 
 (() => {
-  const NUMBER_OF_PINS = 8;
+  const NUMBER_OF_PINS = 20;
   const Pin = {
     WIDTH: 50,
     HEIGHT: 70

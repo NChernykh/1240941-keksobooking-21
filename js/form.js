@@ -34,11 +34,6 @@
     }
   }; // Словарь?
 
-  const Url = {
-    GET: `https://21.javascript.pages.academy/keksobooking/data`,
-    POST: `https://21.javascript.pages.academy/keksobooking`,
-  };
-
   const adForm = document.querySelector(`.ad-form`);
   const fieldsets = adForm.querySelectorAll(`fieldset`);
   const roomNumberSelect = adForm.querySelector(`#room_number`);
@@ -99,14 +94,6 @@
     adForm.classList.remove(`ad-form--disabled`);
     window.util.fieldsOn(fieldsets);
   };
-
-  const onAdFormSubmitClick = (evt) => {
-    evt.preventDefault();
-    let dataForm = new FormData(adForm);
-    window.backend.sendRequest(`POST`, Url.POST, dataForm, window.serverMessage.renderSuccess, window.serverMessage.renderError);
-  };
-
-  adForm.addEventListener(`submit`, onAdFormSubmitClick);
 
   window.form = {
     disable: disableForm,

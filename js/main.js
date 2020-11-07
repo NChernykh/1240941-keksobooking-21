@@ -17,22 +17,47 @@ const adFormResetButton = adForm.querySelector(`.ad-form__reset`);
 
 const onMainPinPressEnter = (evt) => {
   window.util.isEnterEvent(evt, activatePage);
-  window.mainPin.setCoords();
 };
 
 const onMainPinPressMouse = (evt) => {
   window.util.isMouseEvent(evt, activatePage);
 
 };
-
+/**
+ * Переводит страницу в неактивное состояние
+ */
 const onAdFormResetClick = () => {
   deactivatePage();
 };
 
+/**
+ * Отправляет данные из формы на сервер посредством XHR и переводит страницу в неактивное состояние
+ * @param {object} evt объект события
+ */
+const onAdFormSubmitClick = (evt) => {
+  evt.preventDefault();
+  let dataForm = new FormData(adForm);
+  window.backend.sendRequest(`POST`, Url.POST, dataForm, window.serverMessage.renderSuccess, window.serverMessage.renderError);
+  deactivatePage();
+};
+
+/**
+ * Добавляет обработчик отправки формы
+ */
+adForm.addEventListener(`submit`, onAdFormSubmitClick);
+
+/**
+ * При успешной загрузке отрисовывает метки на карте с данными с сервера
+ * @param {Array} serverData массив данных
+ */
 const successHandler = (serverData) => {
   window.pins.render(serverData);
 };
 
+/**
+ * При ошибке загрузки выводит сообщение
+ * @param {String} errorMessage cообщение об ошибке
+ */
 const errorHandler = (errorMessage) => {
   window.serverMessage.renderError(errorMessage);
 };
@@ -51,6 +76,9 @@ const activatePage = () => {
   adFormResetButton.addEventListener(`click`, onAdFormResetClick);
 };
 
+/**
+ * Переводит страницу в неактивное состояние
+ */
 const deactivatePage = () => {
   window.util.fieldsOff(mapFormFilters);
   map.classList.add(`map--faded`);
