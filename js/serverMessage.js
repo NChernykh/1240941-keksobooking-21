@@ -17,7 +17,7 @@
    * Удаляет сообщение и его обработчики из DOM
    */
     const closeSuccess = () => {
-      document.querySelector(`.success`).remove();
+      successElement.remove();
       document.removeEventListener(`click`, onSuccessClick);
       document.removeEventListener(`keydown`, onSuccessEscPress);
     };
@@ -42,8 +42,7 @@
     errorElement.querySelector(`.error__message`).textContent = errorMessage;
     document.body.appendChild(errorElement);
 
-    const onErrorButtonClick = (evt) => {
-      evt.preventDefault();
+    const onErrorButtonClick = () => {
       closeError();
     };
 
@@ -58,7 +57,7 @@
     * Удаляет сообщение и его обработчики из DOM
     */
     const closeError = () => {
-      document.querySelector(`.error`).remove();
+      errorElement.remove();
       document.removeEventListener(`keydown`, onErrorEscPress);
     };
   };

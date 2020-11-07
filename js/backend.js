@@ -2,7 +2,8 @@
 (() => {
   const TIMEOUT = 10000;
   const StatusCodes = {
-    OK: 200
+    OK: 200,
+    NOT_FOUND: 404
   };
   /**
    * Загружает и отправляет данные с сервера
@@ -22,6 +23,9 @@
       switch (xhr.status) {
         case StatusCodes.OK:
           onSuccess(xhr.response);
+          break;
+        case StatusCodes.NOT_FOUND:
+          error = `ошибка ${xhr.status} ${xhr.statusText} данные не найдены`;
           break;
         default:
           error = `Cтатус ответа: ${xhr.status} ${xhr.statusText}`;

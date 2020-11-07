@@ -5,8 +5,8 @@ const Url = {
 };
 
 const InitialPosition = {
-  left: 602,
-  top: 407
+  left: `570px`,
+  top: `375px`
 };
 
 const map = document.querySelector(`.map`);
@@ -29,6 +29,14 @@ const onAdFormResetClick = () => {
   deactivatePage();
 };
 
+const successHandler = (serverData) => {
+  window.pins.render(serverData);
+};
+
+const errorHandler = (errorMessage) => {
+  window.serverMessage.renderError(errorMessage);
+};
+
 /**
  * Активирует страницу, удаляет классы и атрибуты, блоктрующие страницу
  */
@@ -37,8 +45,7 @@ const activatePage = () => {
   window.util.fieldsOn(mapFormFilters);
   window.mainPin.setCoords();
   window.form.active();
-  window.pins.render();
-  window.backend.sendRequest(`GET`, Url.GET, window.serverMessage.renderSuccess, window.serverMessage.renderError);
+  window.backend.sendRequest(`GET`, Url.GET, ``, successHandler, errorHandler);
   mapPinMain.removeEventListener(`keydown`, onMainPinPressEnter);
   mapPinMain.removeEventListener(`click`, onMainPinPressMouse);
   adFormResetButton.addEventListener(`click`, onAdFormResetClick);
@@ -48,12 +55,12 @@ const deactivatePage = () => {
   window.util.fieldsOff(mapFormFilters);
   map.classList.add(`map--faded`);
   window.form.disable();
-  window.mainPin.setCoords();
+  adForm.reset();
   mapPinMain.style.left = InitialPosition.left;
   mapPinMain.style.top = InitialPosition.top;
+  window.mainPin.setCoords();
   window.pins.remove();
   window.card.remove();
-  adForm.reset();
   adFormResetButton.removeEventListener(`click`, onAdFormResetClick);
   mapPinMain.addEventListener(`mousedown`, onMainPinPressMouse);
   mapPinMain.addEventListener(`keydown`, onMainPinPressEnter);
