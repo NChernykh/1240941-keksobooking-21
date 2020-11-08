@@ -34,9 +34,6 @@
     }
   }; // Словарь?
 
-
-  const map = document.querySelector(`.map`);
-  const mapFormFilters = map.querySelectorAll(`select, fieldset`);
   const adForm = document.querySelector(`.ad-form`);
   const fieldsets = adForm.querySelectorAll(`fieldset`);
   const roomNumberSelect = adForm.querySelector(`#room_number`);
@@ -89,16 +86,12 @@
   checkoutSelect.addEventListener(`change`, checkInOutChangeHandler);
 
   const disableForm = () => {
-    map.classList.add(`map--faded`);
     adForm.classList.add(`ad-form--disabled`);
-    window.util.fieldsOff(mapFormFilters);
     window.util.fieldsOff(fieldsets);
   };
 
   const activeForm = () => {
-    map.classList.remove(`map--faded`);
     adForm.classList.remove(`ad-form--disabled`);
-    window.util.fieldsOn(mapFormFilters);
     window.util.fieldsOn(fieldsets);
   };
 

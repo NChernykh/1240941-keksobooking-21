@@ -17,11 +17,14 @@
     bottom: 630 - mapPinMain.offsetHeight - MainPin.SPINE
   };
 
-  const getCoords = () => {
+  /**
+   * Считает координаты и записывает в строку адреса
+   */
+  const setCoords = () => {
     const x = Math.round(mapPinMain.offsetLeft + MainPin.DIAGONAL / 2);
     const y = Math.round(mapPinMain.offsetTop + MainPin.DIAGONAL / 2);
     const spine = Math.round(y + MainPin.DIAGONAL / 2 + MainPin.SPINE);
-    addressInput.value = map.classList.contains(`map--faded`) ? `${x}, ${y}` : `${x}, ${spine}`;
+    addressInput.value = map.classList.contains(`map--faded`) ? `${x - 1}, ${y - 1}` : `${x - 1}, ${spine - 1}`;
   };
 
   mapPinMain.addEventListener(`mousedown`, (evt) => {
@@ -70,12 +73,12 @@
       mapPinMain.style.top = `${newLocation.y}px`;
       mapPinMain.style.left = `${newLocation.x}px`;
 
-      getCoords();
+      setCoords();
     };
 
     const onMouseUp = (upEvt) => {
       upEvt.preventDefault();
-      getCoords();
+      setCoords();
       document.removeEventListener(`mousemove`, onMouseMove);
       document.removeEventListener(`mouseup`, onMouseUp);
     };
@@ -85,6 +88,6 @@
   });
 
   window.mainPin = {
-    getCoords
+    setCoords
   };
 })();

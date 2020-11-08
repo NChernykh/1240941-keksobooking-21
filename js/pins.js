@@ -1,14 +1,12 @@
 'use strict';
 
 (() => {
-  const NUMBER_OF_OFFERS = 8;
-
+  const NUMBER_OF_PINS = 20;
   const Pin = {
     WIDTH: 50,
     HEIGHT: 70
   };
 
-  const offersArray = window.data.getoffers(NUMBER_OF_OFFERS);
   const pinsContainer = document.querySelector(`.map__pins`);
   const pinTemplate = document.querySelector(`#pin`).content.querySelector(`.map__pin`);
   /**
@@ -43,19 +41,32 @@
   };
 
   /**
-   * Создает фрагмент документа (коллекция из DOM-элементов меток объяв)
+   * Удаляет метки
    */
-  const renderPins = () => {
-    const fragment = document.createDocumentFragment();
+  const removePins = () => {
+    if (document.querySelector(`.map__pin:not(.map__pin--main)`)) {
+      const mapPins = document.querySelectorAll(`.map__pin:not(.map__pin--main)`);
+      mapPins.forEach((pin) => {
+        pin.remove();
+      });
+    }
+  };
 
-    offersArray.forEach((offerData) => {
-      fragment.appendChild(renderPin(offerData));
-    });
+  /**
+   * Отрисовывает пины объявлений
+   * @param {Array} ads Массивы объявлений
+   */
+  const renderPins = (ads) => {
+    const fragment = document.createDocumentFragment();
+    for (let i = 0; i < Math.min(NUMBER_OF_PINS, ads.length); i++) {
+      fragment.appendChild(renderPin(ads[i]));
+    }
 
     pinsContainer.appendChild(fragment);
   };
 
   window.pins = {
-    render: renderPins
+    render: renderPins,
+    remove: removePins
   };
 })();
