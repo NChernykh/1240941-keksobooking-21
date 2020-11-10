@@ -85,6 +85,6 @@
     isMouseEvent,
     fieldsOff,
     fieldsOn,
-    removeItem
+    removeItem,
   };
 })();

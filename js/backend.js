@@ -7,13 +7,13 @@
   };
   /**
    * Загружает и отправляет данные с сервера
-   * @param {*} method POST/GET
-   * @param {*} URL адрес
-   * @param {*} data данные формы
-   * @param {*} onSuccess успешный запрос
-   * @param {*} onError ошибка
+   * @param {string} method тип запроса, который отправлям на сервер
+   * @param {string} url адрес, куда отправляется запрос
+   * @param {object} data данные формы
+   * @param {function} onSuccess cb, который запускается в случае успешного запроса
+   * @param {function} onError cb, который запускается в случае ошибки
    */
-  const sendRequest = (method, URL, data, onSuccess, onError) => {
+  const sendRequest = (method, url, data, onSuccess, onError) => {
     const xhr = new XMLHttpRequest();
 
     xhr.responseType = `json`;
@@ -38,12 +38,12 @@
     xhr.addEventListener(`error`, () => {
       onError(`Произошла ошибка соединения`);
     });
-    xhr.addEventListener(`timeout`, function () {
+    xhr.addEventListener(`timeout`, () => {
       onError(`Запрос не успел выполниться за ${xhr.timeout} мс`);
     });
 
     xhr.timeout = TIMEOUT;
-    xhr.open(method, URL);
+    xhr.open(method, url);
     xhr.send(data);
   };
 

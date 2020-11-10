@@ -39,7 +39,7 @@
    * @param {Array} photosArray массив фото
    * @return {HTMLCollection} коллекция фото
    */
-  const getPhotos = function (photosArray) {
+  const getPhotos = (photosArray) => {
     const popupPhotos = card.querySelector(`.popup__photos`);
     const photosList = popupPhotos.querySelectorAll(`.popup__photo`);
     for (let photo of photosList) {
@@ -78,9 +78,8 @@
   };
 
   const removeCard = () => {
-    if (map.querySelector(`.map__card`)) {
-      map.querySelector(`.map__card`).remove();
-    }
+    const mapCard = document.querySelector(`.map__card`);
+    window.util.removeItem(mapCard);
   };
 
   const onPopupKeyPress = (evt) => {
@@ -94,8 +93,7 @@
   };
 
   const openPopup = (pinNumber) => {
-    const mapCard = document.querySelector(`.map__card`);
-    window.util.removeItem(mapCard);
+    removeCard();
     renderCard(pinNumber);
     document.addEventListener(`keydown`, onPopupKeyPress);
     const cardClose = map.querySelector(`.popup__close`);

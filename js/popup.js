@@ -10,7 +10,7 @@
   /**
  * Добавляет в DOM сообщение оБ успешной отправке объявления
  */
-  const renderSuccess = () => {
+  const getSuccess = () => {
     document.body.appendChild(successElement);
 
     /**
@@ -38,7 +38,7 @@
    * Добавляет в DOM сообщение об ошибке
    * @param {String} errorMessage текст ошибки
    */
-  const renderError = (errorMessage) => {
+  const getError = (errorMessage) => {
     errorElement.querySelector(`.error__message`).textContent = errorMessage;
     document.body.appendChild(errorElement);
 
@@ -62,8 +62,8 @@
     };
   };
 
-  window.serverMessage = {
-    renderSuccess,
-    renderError
+  window.popup = {
+    getSuccess,
+    getError
   };
 })();
