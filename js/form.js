@@ -13,7 +13,7 @@
     MAX: 100
   };
 
-  const GuestsMin = `0`;
+  const GuestsMin = 0;
 
   const capacity = {
     1: {
@@ -32,7 +32,7 @@
       key: [0],
       message: `100 комнат не для гостей`
     }
-  }; // Словарь?
+  };
 
   const adForm = document.querySelector(`.ad-form`);
   const fieldsets = adForm.querySelectorAll(`fieldset`);
@@ -47,7 +47,7 @@
     const rooms = roomNumberSelect.value;
     const guests = capacitySelect.value;
     const selectValue = capacity[rooms];
-    if (+guests > selectValue.key.length || (+guests === GuestsMin && +rooms === RoomMap.MAX)) {
+    if (+guests > selectValue.key.length || (+guests === GuestsMin && +rooms < RoomMap.MAX)) {
       capacitySelect.setCustomValidity(selectValue.message);
     } else if (+rooms === RoomMap.MAX && +guests === RoomMap.MIN || +rooms === RoomMap.MIN && +guests === GuestsMin) {
       capacitySelect.setCustomValidity(selectValue.message);
