@@ -1,7 +1,6 @@
 'use strict';
 
 (() => {
-  const NUMBER_OF_PINS = 5;
   const Pin = {
     WIDTH: 50,
     HEIGHT: 70
@@ -44,10 +43,11 @@
    * Удаляет метки
    */
   const removePins = () => {
-    if (document.querySelector(`.map__pin:not(.map__pin--main)`)) {
-      const mapPins = document.querySelectorAll(`.map__pin:not(.map__pin--main)`);
-      mapPins.forEach((pin) => {
-        pin.remove();
+    const mapPin = document.querySelector(`.map__pin:not(.map__pin--main)`);
+    const mapPins = document.querySelectorAll(`.map__pin:not(.map__pin--main)`);
+    if (mapPin) {
+      mapPins.forEach((pinElem) => {
+        pinElem.remove();
       });
     }
   };
@@ -58,9 +58,9 @@
    */
   const renderPins = (ads) => {
     const fragment = document.createDocumentFragment();
-    for (let i = 0; i < Math.min(NUMBER_OF_PINS, ads.length); i++) {
-      fragment.appendChild(renderPin(ads[i]));
-    }
+    ads.forEach((ad) => {
+      fragment.appendChild(renderPin(ad));
+    });
 
     pinsContainer.appendChild(fragment);
   };

@@ -1,6 +1,8 @@
 'use strict';
 
 (() => {
+  const NUMBER_OF_PINS = 5;
+  const TIMEOUT = 300;
   const mapFiltersForm = document.querySelector(`.map__filters`);
   const houseType = mapFiltersForm.querySelector(`#housing-type`);
   const housePrice = mapFiltersForm.querySelector(`#housing-price`);
@@ -52,14 +54,14 @@
         return item.offer.features.includes(feature);
       });
       return isTypeMatched && isRoomsMatched && isGuestMatched && isPriceMatched && isFeatureMatched;
-    });
+    }).slice(0, NUMBER_OF_PINS);
   });
 
   const onFilterChange = window.debounce(() => {
     window.pins.remove();
     window.card.remove();
     window.pins.render(renderData(arrFilterData));
-  }, 300);
+  }, TIMEOUT);
 
   mapFiltersForm.addEventListener(`change`, onFilterChange);
 

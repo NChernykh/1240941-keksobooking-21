@@ -6,16 +6,16 @@
     POST: `https://21.javascript.pages.academy/keksobooking`,
   };
 
-  const InitialPosition = {
-    left: 570,
-    top: 375
-  };
-
   const map = document.querySelector(`.map`);
   const mapPinMain = map.querySelector(`.map__pin--main`);
   const mapFormFilters = map.querySelectorAll(`select, fieldset`);
   const adForm = document.querySelector(`.ad-form`);
   const adFormResetButton = adForm.querySelector(`.ad-form__reset`);
+
+  const InitialPosition = {
+    LEFT: 570,
+    TOP: 375
+  };
 
   const onMainPinPressEnter = (evt) => {
     window.util.isEnterEvent(evt, activatePage);
@@ -85,10 +85,11 @@
   const deactivatePage = () => {
     window.util.fieldsOff(mapFormFilters);
     map.classList.add(`map--faded`);
-    window.form.disable();
     adForm.reset();
-    mapPinMain.style.left = `${InitialPosition.left}px`;
-    mapPinMain.style.top = `${InitialPosition.top}px`;
+    window.form.minPriceChangeHandler();
+    window.form.disable();
+    mapPinMain.style.left = `${InitialPosition.LEFT}px`;
+    mapPinMain.style.top = `${InitialPosition.TOP}px`;
     window.mainPin.setCoords();
     window.pins.remove();
     window.card.remove();

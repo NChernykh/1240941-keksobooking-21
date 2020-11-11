@@ -11,10 +11,10 @@
   const addressInput = document.querySelector(`#address`);
 
   const mapLimits = {
-    top: 130 - mapPinMain.offsetHeight - MainPin.SPINE,
-    right: map.offsetWidth - (mapPinMain.offsetWidth / 2),
-    left: -(mapPinMain.offsetWidth / 2),
-    bottom: 630 - mapPinMain.offsetHeight - MainPin.SPINE
+    top: 130 - MainPin.DIAGONAL - MainPin.SPINE,
+    right: map.offsetWidth - (MainPin.DIAGONAL / 2),
+    left: -(MainPin.DIAGONAL / 2),
+    bottom: 630 - MainPin.DIAGONAL - MainPin.SPINE
   };
 
   /**

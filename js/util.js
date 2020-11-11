@@ -1,34 +1,6 @@
 'use strict';
 
 (() => {
-  /**
- * Выбирает случайное целое число от min до max включительно.
- * @param {number} min Минимальное число
- * @param {number} max Максимальное число
- * @return {number} Случайное целое число
- */
-  const getRandomInteger = (min, max) => {
-    return Math.floor(Math.random() * (max + 1 - min)) + min;
-  };
-
-  /**
- * Выбирает рандомный элемент из массива
- * @param {Array} array случайный массив
- * @return {*} случайный элемент массива
- */
-  const getRandomElement = (array) => {
-    return array[Math.floor(Math.random() * array.length)];
-  };
-
-  /**
- * Создает массив случайной длины
- * @param {array} array Случайный массив
- * @return {array} Массив случайной длины
- */
-  const getRandomArraySize = (array) => {
-    return array.slice(0, getRandomInteger(0, array.length));
-  };
-
   const isEscEvent = (evt, action) => {
     if (evt.key === `Escape`) {
       evt.preventDefault();
@@ -77,14 +49,11 @@
   };
 
   window.util = {
-    getRandomInteger,
-    getRandomElement,
-    getRandomArraySize,
     isEscEvent,
     isEnterEvent,
     isMouseEvent,
     fieldsOff,
     fieldsOn,
-    removeItem,
+    removeItem
   };
 })();

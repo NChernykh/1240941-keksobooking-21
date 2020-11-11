@@ -1,19 +1,19 @@
 'use strict';
 
 (() => {
+  const GUEST_MIN = 0;
+
   const priceMap = {
     bungalow: 0,
     flat: 1000,
     house: 5000,
     palace: 10000
-  }; // как словарь можно записать?
+  };
 
   const RoomMap = {
     MIN: 1,
     MAX: 100
   };
-
-  const GuestsMin = 0;
 
   const capacity = {
     1: {
@@ -47,9 +47,9 @@
     const rooms = roomNumberSelect.value;
     const guests = capacitySelect.value;
     const selectValue = capacity[rooms];
-    if (+guests > selectValue.key.length || (+guests === GuestsMin && +rooms < RoomMap.MAX)) {
+    if (+guests > selectValue.key.length || (+guests === GUEST_MIN && +rooms < RoomMap.MAX)) {
       capacitySelect.setCustomValidity(selectValue.message);
-    } else if (+rooms === RoomMap.MAX && +guests === RoomMap.MIN || +rooms === RoomMap.MIN && +guests === GuestsMin) {
+    } else if (+rooms === RoomMap.MAX && +guests === RoomMap.MIN || +rooms === RoomMap.MIN && +guests === GUEST_MIN) {
       capacitySelect.setCustomValidity(selectValue.message);
     } else {
       capacitySelect.setCustomValidity(``);
@@ -58,19 +58,8 @@
   };
 
   const minPriceChangeHandler = () => {
-    const price = +priceInput.value;
-    const minPrice = priceMap[apartmentTypeSelect.options[apartmentTypeSelect.selectedIndex].value];
-    priceInput.placeholder = minPrice;
-    priceInput.min = minPrice;
-
-    if (price < minPrice) {
-      priceInput.setCustomValidity(`Минимальная цена для данного размещения ${minPrice}`);
-    } else if (price > +priceInput.max) {
-      priceInput.setCustomValidity(`Максимально возможая цена ${priceInput.max}`);
-    } else {
-      priceInput.setCustomValidity(``);
-    }
-    priceInput.reportValidity();
+    priceInput.placeholder = priceMap[apartmentTypeSelect.value];
+    priceInput.min = priceMap[apartmentTypeSelect.value];
   };
 
   const checkInOutChangeHandler = (evt) => {
@@ -97,6 +86,7 @@
 
   window.form = {
     disable: disableForm,
-    active: activeForm
+    active: activeForm,
+    minPriceChangeHandler
   };
 })();
