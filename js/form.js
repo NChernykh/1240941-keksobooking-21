@@ -14,6 +14,13 @@ const RoomMap = {
   MAX: 100
 };
 
+const FILE_TYPES = [
+  `gif`,
+  `jpg`,
+  `jpeg`,
+  `png`
+];
+
 const capacity = {
   1: {
     key: [1],
@@ -34,6 +41,11 @@ const capacity = {
 };
 
 const adForm = document.querySelector(`.ad-form`);
+const avatarInput = adForm.querySelector(`#avatar`);
+const avatarPreview = adForm.querySelector(`.ad-form-header__preview img`);
+const imagesInput = adForm.querySelector(`#images`);
+const imagesPreview = adForm.querySelector(`.ad-form__photo`);
+const avatarPreviewStartSrc = avatarPreview.src;
 const fieldsets = adForm.querySelectorAll(`fieldset`);
 const roomNumberSelect = adForm.querySelector(`#room_number`);
 const capacitySelect = adForm.querySelector(`#capacity`);
@@ -41,6 +53,41 @@ const apartmentTypeSelect = adForm.querySelector(`#type`);
 const priceInput = adForm.querySelector(`#price`);
 const checkinSelect = adForm.querySelector(`#timein`);
 const checkoutSelect = adForm.querySelector(`#timeout`);
+
+const getFileChange = (inputFile) => {
+  const file = inputFile.files[0];
+  const fileName = file.name.toLowerCase();
+
+  const matches = FILE_TYPES.some((end) => {
+    return fileName.endsWith(end);
+  });
+
+  if (matches) {
+    const reader = new FileReader();
+    if (inputFile === avatarInput) {
+
+      reader.addEventListener(`load`, () => {
+        avatarPreview.src = reader.result;
+      });
+    } else if (inputFile === imagesInput) {
+      reader.addEventListener(`load`, () => {
+        imagesPreview.style.backgroundSize = `contain`;
+        imagesPreview.style.backgroundImage = `url(${reader.result})`;
+      });
+    }
+    reader.readAsDataURL(file);
+  }
+};
+
+avatarInput.addEventListener(`change`, ()=> {
+  avatarPreview.src = avatarPreviewStartSrc;
+  getFileChange(avatarInput);
+});
+
+imagesInput.addEventListener(`change`, ()=> {
+  imagesPreview.style.backgroundImage = ``;
+  getFileChange(imagesInput);
+});
 
 const onCapacityChange = () => {
   const rooms = roomNumberSelect.value;
@@ -76,6 +123,8 @@ checkoutSelect.addEventListener(`change`, onCheckInOutChange);
 const disableForm = () => {
   adForm.classList.add(`ad-form--disabled`);
   window.util.fieldsOff(fieldsets);
+  avatarPreview.src = avatarPreviewStartSrc;
+  imagesPreview.style.backgroundImage = ``;
 };
 
 const activeForm = () => {
